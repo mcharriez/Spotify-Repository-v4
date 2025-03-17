@@ -332,39 +332,66 @@ export default function PlaylistDetail() {
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Playlists
       </Button>
 
-      <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6 mb-6 md:mb-8">
-        <div className="w-full md:w-auto">
-          <div className="flex flex-row md:flex-col gap-3 md:gap-0">
-            {playlist.images && playlist.images[0] ? (
-              <img
-                src={playlist.images[0].url}
-                alt={playlist.name}
-                className="h-24 w-24 md:h-48 md:w-48 object-cover rounded-md shadow-md"
-              />
-            ) : (
-              <div className="h-24 w-24 md:h-48 md:w-48 bg-muted flex items-center justify-center rounded-md">
-                <Music className="h-10 w-10 md:h-16 md:w-16 text-muted-foreground" />
-              </div>
-            )}
+      <div className="flex items-center gap-3 mb-4 bg-card/50 p-3 rounded-md">
+        <div className="flex-shrink-0">
+          {playlist.images && playlist.images[0] ? (
+            <img
+              src={playlist.images[0].url}
+              alt={playlist.name}
+              className="h-16 w-16 md:h-20 md:w-20 object-cover rounded-md shadow-md"
+            />
+          ) : (
+            <div className="h-16 w-16 md:h-20 md:w-20 bg-muted flex items-center justify-center rounded-md">
+              <Music className="h-8 w-8 text-muted-foreground" />
+            </div>
+          )}
+        </div>
 
-            {/* Playlist action buttons - mobile */}
-            <div className="flex flex-col justify-center space-y-1 md:hidden flex-1">
-              <div className="flex gap-1">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div>
+              <h1 className="text-lg md:text-xl font-bold truncate">
+                {playlist.name}
+              </h1>
+              {playlist.description && (
+                <p className="text-xs text-muted-foreground truncate">
+                  {playlist.description}
+                </p>
+              )}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
+                <p className="text-xs">{playlist.tracks?.total || 0} tracks</p>
+                <p className="text-xs flex items-center">
+                  <MessageSquare className="h-3 w-3 mr-1" />
+                  {commentCount} comments
+                </p>
+                {playlist.owner && (
+                  <p className="text-xs text-muted-foreground">
+                    By: {playlist.owner.display_name}
+                  </p>
+                )}
+                {playlist.collaborative && (
+                  <p className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-sm inline-flex items-center">
+                    <UserPlus className="h-2.5 w-2.5 mr-1" />
+                    Collaborative
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 mt-2 md:mt-0">
+              <div className="md:w-48 lg:w-56">
+                <PlaylistPlayer />
+              </div>
+              <div className="flex gap-1.5">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 h-8 text-xs"
-                    >
-                      <Plus className="mr-1 h-3 w-3" /> Add
+                    <Button variant="outline" size="sm" className="h-8">
+                      <Plus className="h-3.5 w-3.5" />
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-md">
                     <DialogHeader>
                       <DialogTitle>Add Tracks to Playlist</DialogTitle>
                     </DialogHeader>
-                    {/* Dialog content remains the same */}
                     <div className="mt-4 space-y-4">
                       <div className="flex items-center space-x-2">
                         <Input
@@ -449,369 +476,14 @@ export default function PlaylistDetail() {
                 </Dialog>
 
                 {playlist && (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 h-8 text-xs"
-                      >
-                        <Share2 className="mr-1 h-3 w-3" /> Share
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
-                      <DialogHeader>
-                        <DialogTitle>Share Playlist</DialogTitle>
-                        <DialogDescription>
-                          {playlist.collaborative
-                            ? "Share this collaborative playlist with friends to let them add tracks."
-                            : "Share this playlist with friends."}
-                        </DialogDescription>
-                      </DialogHeader>
-
-                      <div className="flex flex-col space-y-4 py-4">
-                        <div className="flex flex-col space-y-2">
-                          <Label>Playlist Link</Label>
-                          <div className="flex items-center space-x-2">
-                            <Input
-                              value={`${window.location.origin}/playlist/${playlist.id}`}
-                              readOnly
-                              className="flex-1"
-                            />
-                            <Button
-                              type="button"
-                              size="icon"
-                              variant="outline"
-                              onClick={() =>
-                                navigator.clipboard.writeText(
-                                  `${window.location.origin}/playlist/${playlist.id}`,
-                                )
-                              }
-                            >
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                  <SharePlaylistDialog
+                    playlistId={playlist.id}
+                    playlistName={playlist.name}
+                    isCollaborative={!!playlist.collaborative}
+                  />
                 )}
               </div>
-
-              {isPlaylistOwner && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-8 text-xs">
-                      <UserPlus className="mr-1 h-3 w-3" /> Invite Collaborators
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-md">
-                    <DialogHeader>
-                      <DialogTitle>Invite Collaborators</DialogTitle>
-                    </DialogHeader>
-                    {/* Dialog content remains the same */}
-                    <div className="mt-4 space-y-4">
-                      <div className="flex items-center space-x-2">
-                        <Input
-                          placeholder="Search for users..."
-                          value={collaboratorQuery}
-                          onChange={(e) => setCollaboratorQuery(e.target.value)}
-                          className="flex-1"
-                        />
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          disabled={isSearchingCollaborators}
-                        >
-                          {isSearchingCollaborators ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Search className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
-
-                      <div className="max-h-[300px] overflow-y-auto space-y-2">
-                        {collaboratorResults.length === 0 &&
-                          collaboratorQuery.trim().length > 1 &&
-                          !isSearchingCollaborators && (
-                            <p className="text-center text-muted-foreground py-4">
-                              No users found
-                            </p>
-                          )}
-
-                        {collaboratorResults.map((user) => (
-                          <div
-                            key={user.id}
-                            className="flex items-center justify-between p-2 hover:bg-muted rounded-md"
-                          >
-                            <div className="flex items-center space-x-3">
-                              {user.images && user.images[0] ? (
-                                <img
-                                  src={user.images[0].url}
-                                  alt={user.display_name}
-                                  className="h-10 w-10 rounded-full"
-                                />
-                              ) : (
-                                <div className="h-10 w-10 bg-muted flex items-center justify-center rounded-full">
-                                  <span className="text-muted-foreground font-medium">
-                                    {user.display_name?.charAt(0) || "U"}
-                                  </span>
-                                </div>
-                              )}
-                              <div>
-                                <p className="font-medium text-sm">
-                                  {user.display_name}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {user.id}
-                                </p>
-                              </div>
-                            </div>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleAddCollaborator(user.id)}
-                              disabled={isAddingCollaborator}
-                            >
-                              {isAddingCollaborator ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <UserPlus className="h-4 w-4" />
-                              )}
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              )}
             </div>
-          </div>
-
-          {/* Playlist action buttons - desktop */}
-          <div className="mt-4 hidden md:flex md:flex-col space-y-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="w-full justify-start">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Tracks
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Add Tracks to Playlist</DialogTitle>
-                </DialogHeader>
-
-                <div className="mt-4 space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      placeholder="Search for tracks..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="flex-1"
-                    />
-                    <Button size="icon" variant="ghost" disabled={isSearching}>
-                      {isSearching ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Search className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-
-                  <div className="max-h-[300px] overflow-y-auto space-y-2">
-                    {searchResults.length === 0 &&
-                      searchQuery.trim().length > 1 &&
-                      !isSearching && (
-                        <p className="text-center text-muted-foreground py-4">
-                          No tracks found
-                        </p>
-                      )}
-
-                    {searchResults.map((track) => (
-                      <div
-                        key={track.id}
-                        className="flex items-center justify-between p-2 hover:bg-muted rounded-md"
-                      >
-                        <div className="flex items-center space-x-3">
-                          {track.album.images && track.album.images[0] ? (
-                            <img
-                              src={track.album.images[0].url}
-                              alt={track.name}
-                              className="h-10 w-10 rounded-sm"
-                            />
-                          ) : (
-                            <div className="h-10 w-10 bg-muted flex items-center justify-center rounded-sm">
-                              <Music className="h-5 w-5 text-muted-foreground" />
-                            </div>
-                          )}
-                          <div>
-                            <p className="font-medium text-sm">{track.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {track.artists
-                                .map((artist: any) => artist.name)
-                                .join(", ")}
-                            </p>
-                          </div>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAddTrack(track.uri);
-                          }}
-                          disabled={
-                            isAddingTrack && selectedTrackUri === track.uri
-                          }
-                        >
-                          {isAddingTrack && selectedTrackUri === track.uri ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Plus className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            {/* Share Playlist Button */}
-            {playlist && (
-              <SharePlaylistDialog
-                playlistId={playlist.id}
-                playlistName={playlist.name}
-                isCollaborative={!!playlist.collaborative}
-              />
-            )}
-
-            {isPlaylistOwner && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start">
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Invite Collaborators
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Invite Collaborators</DialogTitle>
-                  </DialogHeader>
-
-                  <div className="mt-4 space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <Input
-                        placeholder="Search for users..."
-                        value={collaboratorQuery}
-                        onChange={(e) => setCollaboratorQuery(e.target.value)}
-                        className="flex-1"
-                      />
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        disabled={isSearchingCollaborators}
-                      >
-                        {isSearchingCollaborators ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Search className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-
-                    <div className="max-h-[300px] overflow-y-auto space-y-2">
-                      {collaboratorResults.length === 0 &&
-                        collaboratorQuery.trim().length > 1 &&
-                        !isSearchingCollaborators && (
-                          <p className="text-center text-muted-foreground py-4">
-                            No users found
-                          </p>
-                        )}
-
-                      {collaboratorResults.map((user) => (
-                        <div
-                          key={user.id}
-                          className="flex items-center justify-between p-2 hover:bg-muted rounded-md"
-                        >
-                          <div className="flex items-center space-x-3">
-                            {user.images && user.images[0] ? (
-                              <img
-                                src={user.images[0].url}
-                                alt={user.display_name}
-                                className="h-10 w-10 rounded-full"
-                              />
-                            ) : (
-                              <div className="h-10 w-10 bg-muted flex items-center justify-center rounded-full">
-                                <span className="text-muted-foreground font-medium">
-                                  {user.display_name?.charAt(0) || "U"}
-                                </span>
-                              </div>
-                            )}
-                            <div>
-                              <p className="font-medium text-sm">
-                                {user.display_name}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {user.id}
-                              </p>
-                            </div>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleAddCollaborator(user.id)}
-                            disabled={isAddingCollaborator}
-                          >
-                            {isAddingCollaborator ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <UserPlus className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col w-full">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">
-              {playlist.name}
-            </h1>
-            <div className="w-full md:w-72 mt-2 md:mt-0">
-              <PlaylistPlayer />
-            </div>
-          </div>
-          {playlist.description && (
-            <p className="text-muted-foreground mt-1 mb-2">
-              {playlist.description}
-            </p>
-          )}
-          <div className="flex flex-col">
-            <p className="text-sm">{playlist.tracks?.total || 0} tracks</p>
-            <p className="text-sm flex items-center mt-1">
-              <MessageSquare className="h-3 w-3 mr-1" />
-              {commentCount} comments
-            </p>
-            {playlist.owner && (
-              <p className="text-sm text-muted-foreground mt-1">
-                Created by: {playlist.owner.display_name}
-              </p>
-            )}
-            {playlist.collaborative && (
-              <p className="text-sm mt-1 bg-primary/10 text-primary px-2 py-0.5 rounded-sm inline-flex items-center w-fit">
-                <UserPlus className="h-3 w-3 mr-1" />
-                Collaborative
-              </p>
-            )}
           </div>
         </div>
       </div>
@@ -826,7 +498,7 @@ export default function PlaylistDetail() {
           </span>
         </div>
 
-        <ScrollArea className="h-[calc(100vh-20rem)] md:h-[calc(100vh-24rem)]">
+        <ScrollArea className="h-[calc(100vh-16rem)] md:h-[calc(100vh-18rem)]">
           {playlist.tracks && playlist.tracks.items ? (
             playlist.tracks.items.map(
               (item: SpotifyPlaylistTrack, index: number) => {
@@ -839,96 +511,67 @@ export default function PlaylistDetail() {
                     className="border-b last:border-b-0"
                   >
                     <div
-                      className={`flex flex-col md:grid md:grid-cols-[auto_1fr_1fr_auto] gap-2 md:gap-4 px-2 md:px-4 py-2 hover:bg-muted/50 ${isCurrentTrack ? "bg-muted" : ""}`}
+                      className={`flex items-center gap-2 px-2 md:px-4 py-2 hover:bg-muted/50 ${isCurrentTrack ? "bg-muted" : ""}`}
                     >
-                      <div className="flex items-center gap-3 w-full">
-                        <div className="w-10 flex items-center justify-center">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                            onClick={() =>
-                              isCurrentTrack
-                                ? togglePlayPause()
-                                : handlePlayTrack(track.uri)
-                            }
-                          >
-                            {isCurrentTrack && isPlaying ? (
-                              <Pause className="h-4 w-4" />
-                            ) : (
-                              <Play className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-                        <div className="flex flex-col justify-center overflow-hidden flex-1">
-                          <div className="flex items-center justify-between w-full">
-                            <span className="font-medium truncate mr-2">
-                              {track.name}
-                            </span>
-                            <div className="flex items-center gap-2 md:hidden shrink-0">
-                              <span className="text-sm text-muted-foreground whitespace-nowrap">
-                                {formatDuration(track.duration_ms)}
-                              </span>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleRemoveTrack(track.uri);
-                                }}
-                                disabled={
-                                  isRemovingTrack && selectedTrackUri === track.uri
-                                }
-                              >
-                                {isRemovingTrack && selectedTrackUri === track.uri ? (
-                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                                ) : (
-                                  <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
-                                )}
-                              </Button>
-                            </div>
-                          </div>
-                          <span className="text-sm text-muted-foreground truncate">
-                            {track.artists
-                              .map((artist) => artist.name)
-                              .join(", ")}
-                          </span>
-                          <span className="text-xs text-muted-foreground md:hidden">
-                            {track.album.name}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="hidden md:flex flex-col justify-center">
-                        <span className="text-sm truncate">
-                          {track.album.name}
-                        </span>
-                      </div>
-                      <div className="hidden md:flex items-center gap-2 self-end md:self-auto mt-2 md:mt-0">
-                        <span className="text-sm text-muted-foreground">
-                          {formatDuration(track.duration_ms)}
-                        </span>
+                      <div className="w-8 flex items-center justify-center">
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemoveTrack(track.uri);
-                          }}
-                          disabled={
-                            isRemovingTrack && selectedTrackUri === track.uri
+                          className="h-7 w-7 rounded-full"
+                          onClick={() =>
+                            isCurrentTrack
+                              ? togglePlayPause()
+                              : handlePlayTrack(track.uri)
                           }
                         >
-                          {isRemovingTrack && selectedTrackUri === track.uri ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          {isCurrentTrack && isPlaying ? (
+                            <Pause className="h-3.5 w-3.5" />
                           ) : (
-                            <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                            <Play className="h-3.5 w-3.5" />
                           )}
                         </Button>
                       </div>
+                      <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-x-4 items-center">
+                        <div className="overflow-hidden">
+                          <div className="font-medium truncate text-sm">
+                            {track.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {track.artists
+                              .map((artist) => artist.name)
+                              .join(", ")}
+                          </div>
+                        </div>
+                        <div className="hidden md:block text-xs text-muted-foreground truncate">
+                          {track.album.name}
+                        </div>
+                        <div className="flex items-center gap-2 justify-self-end">
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
+                            {formatDuration(track.duration_ms)}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveTrack(track.uri);
+                            }}
+                            disabled={
+                              isRemovingTrack && selectedTrackUri === track.uri
+                            }
+                          >
+                            {isRemovingTrack &&
+                            selectedTrackUri === track.uri ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="pl-2 md:pl-14 pr-2 md:pr-4 pb-2 mt-2 md:mt-0 w-full overflow-hidden">
+                    <div className="pl-10 pr-2 md:pr-4 pb-2 w-full overflow-hidden">
                       <CommentSection
                         key={`comment-section-${track.id}`}
                         trackId={track.id}
