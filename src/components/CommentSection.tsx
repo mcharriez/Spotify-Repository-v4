@@ -72,7 +72,7 @@ function CommentItem({
 
   return (
     <div
-      className={`${depth > 0 ? "border-l-2 pl-2 md:pl-4" : ""} border-muted mt-3 max-w-full overflow-hidden`}
+      className={`${depth > 0 ? "border-l-2 pl-2 md:pl-4" : ""} border-primary/30 mt-3 max-w-full overflow-hidden bg-background/60 p-2 rounded-md`}
     >
       <div className="flex gap-2 w-full overflow-hidden">
         <Avatar className="h-7 w-7 md:h-8 md:w-8 flex-shrink-0">
@@ -399,8 +399,8 @@ export default function CommentSection({
   }
 
   return (
-    <div className="mt-1 w-full overflow-hidden">
-      <div className="flex justify-between items-center mb-2">
+    <div className="mt-1 w-full overflow-hidden pt-2">
+      <div className="flex justify-between items-center mb-3 border-b pb-2">
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
@@ -410,7 +410,7 @@ export default function CommentSection({
           >
             <ChevronDown className="h-4 w-4" />
           </Button>
-          <h3 className="text-xs font-medium">Comments</h3>
+          <h3 className="text-xs font-medium text-primary">Comments</h3>
         </div>
         <Button
           variant="ghost"
@@ -423,7 +423,7 @@ export default function CommentSection({
       </div>
 
       {user ? (
-        <div className="flex gap-2 w-full overflow-hidden">
+        <div className="flex gap-2 w-full overflow-hidden bg-background/80 p-2 rounded-md">
           <Avatar className="h-7 w-7 md:h-8 md:w-8 flex-shrink-0">
             <AvatarImage src={user.images?.[0]?.url} />
             <AvatarFallback>
@@ -462,7 +462,7 @@ export default function CommentSection({
         </p>
       )}
 
-      <div className="mt-3 space-y-2 w-full overflow-hidden">
+      <div className="mt-4 space-y-3 w-full overflow-hidden">
         {isLoading ? (
           <div className="flex justify-center py-4">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

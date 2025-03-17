@@ -571,7 +571,7 @@ export default function PlaylistDetail() {
                         </div>
                       </div>
                     </div>
-                    <div className="pl-10 pr-2 md:pr-4 pb-2 w-full overflow-hidden">
+                    <div className="pl-10 pr-2 md:pr-4 pb-2 w-full overflow-hidden bg-muted/30 rounded-b-md border-t border-border/40 mt-1">
                       <CommentSection
                         key={`comment-section-${track.id}`}
                         trackId={track.id}
