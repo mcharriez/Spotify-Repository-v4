@@ -20,15 +20,15 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4">
-        <div className="flex items-center gap-2">
-          <Music className="h-6 w-6" />
-          <span className="font-bold text-xl tracking-tight">
+      <div className="max-w-7xl mx-auto flex items-center justify-between h-14 md:h-16 px-3 md:px-4">
+        <div className="flex items-center gap-1 md:gap-2">
+          <Music className="h-5 w-5 md:h-6 md:w-6" />
+          <span className="font-bold text-lg md:text-xl tracking-tight hidden sm:inline">
             Spotify Playlist Player
           </span>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <CreatePlaylistDialog />
 
           <DropdownMenu>

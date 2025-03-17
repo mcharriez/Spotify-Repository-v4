@@ -132,7 +132,7 @@ export default function PlaylistPlayer() {
   if (!currentTrackUri) return null;
 
   return (
-    <div className="w-full bg-card rounded-md shadow-md p-3">
+    <div className="w-full bg-card rounded-md shadow-md p-2 md:p-3">
       {currentTrack && (
         <div className="mb-2">
           <div className="font-medium text-sm truncate">
@@ -158,7 +158,7 @@ export default function PlaylistPlayer() {
           className="w-full"
         />
 
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between mt-1 md:mt-2">
           <Button
             variant="ghost"
             size="icon"

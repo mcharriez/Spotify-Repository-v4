@@ -72,26 +72,28 @@ function CommentItem({
 
   return (
     <div
-      className={`pl-${depth > 0 ? "6" : "0"} border-l-${depth > 0 ? "2" : "0"} border-muted mt-3`}
+      className={`${depth > 0 ? "border-l-2 pl-2 md:pl-4" : ""} border-muted mt-3 max-w-full overflow-hidden`}
     >
-      <div className="flex gap-3">
-        <Avatar className="h-8 w-8">
+      <div className="flex gap-2 w-full overflow-hidden">
+        <Avatar className="h-7 w-7 md:h-8 md:w-8 flex-shrink-0">
           <AvatarImage src={comment.author_avatar} />
           <AvatarFallback>{comment.author_name.charAt(0)}</AvatarFallback>
         </Avatar>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <div className="flex items-center gap-1 flex-wrap">
             <span className="font-medium text-sm">{comment.author_name}</span>
             <span className="text-xs text-muted-foreground">
               {formatTimestamp(comment.created_at)}
             </span>
           </div>
-          <p className="text-sm mt-1">{comment.text}</p>
-          <div className="flex items-center gap-4 mt-2">
+          <p className="text-sm mt-1 break-words whitespace-normal overflow-hidden">
+            {comment.text}
+          </p>
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 px-2 text-xs gap-1 text-muted-foreground hover:text-foreground"
+              className="h-8 px-1 text-xs gap-1 text-muted-foreground hover:text-foreground"
               onClick={() => onLike(comment.id)}
             >
               <ThumbsUp className="h-3.5 w-3.5" />
@@ -101,7 +103,7 @@ function CommentItem({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 px-2 text-xs gap-1 text-muted-foreground hover:text-foreground"
+                className="h-8 px-1 text-xs gap-1 text-muted-foreground hover:text-foreground"
                 onClick={() => setIsReplying(!isReplying)}
               >
                 <Reply className="h-3.5 w-3.5" />
@@ -114,7 +116,7 @@ function CommentItem({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
+                    className="h-8 px-1 text-xs text-muted-foreground hover:text-foreground"
                   >
                     <MoreHorizontal className="h-3.5 w-3.5" />
                   </Button>
@@ -130,23 +132,25 @@ function CommentItem({
 
           {isReplying && (
             <div className="mt-3">
-              <Textarea
-                placeholder="Write a reply..."
-                value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
-                className="min-h-[80px] text-sm"
-              />
-              <div className="flex justify-end gap-2 mt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsReplying(false)}
-                >
-                  Cancel
-                </Button>
-                <Button size="sm" onClick={handleReplySubmit}>
-                  Reply
-                </Button>
+              <div className="relative">
+                <Textarea
+                  placeholder="Write a reply..."
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  className="min-h-[80px] text-sm pr-24"
+                />
+                <div className="absolute bottom-2 right-2 flex gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsReplying(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button size="sm" onClick={handleReplySubmit}>
+                    Reply
+                  </Button>
+                </div>
               </div>
             </div>
           )}
@@ -395,7 +399,7 @@ export default function CommentSection({
   }
 
   return (
-    <div className="mt-1">
+    <div className="mt-1 w-full overflow-hidden">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-1">
           <Button
@@ -419,22 +423,27 @@ export default function CommentSection({
       </div>
 
       {user ? (
-        <div className="flex gap-3">
-          <Avatar className="h-8 w-8">
+        <div className="flex gap-2 w-full overflow-hidden">
+          <Avatar className="h-7 w-7 md:h-8 md:w-8 flex-shrink-0">
             <AvatarImage src={user.images?.[0]?.url} />
             <AvatarFallback>
               {user.display_name?.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
-          <div className="flex-1">
-            <Textarea
-              placeholder={`What do you think about ${trackName}?`}
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="min-h-[80px] text-sm"
-            />
-            <div className="flex justify-end mt-2">
-              <Button size="sm" onClick={handleAddComment} disabled={isSaving}>
+          <div className="flex-1 min-w-0 overflow-hidden">
+            <div className="relative">
+              <Textarea
+                placeholder="What do you think about this track?"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                className="min-h-[80px] text-sm pr-24"
+              />
+              <Button
+                size="sm"
+                onClick={handleAddComment}
+                disabled={isSaving}
+                className="absolute bottom-2 right-2"
+              >
                 {isSaving ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -453,7 +462,7 @@ export default function CommentSection({
         </p>
       )}
 
-      <div className="mt-3 space-y-2">
+      <div className="mt-3 space-y-2 w-full overflow-hidden">
         {isLoading ? (
           <div className="flex justify-center py-4">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

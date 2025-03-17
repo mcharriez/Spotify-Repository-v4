@@ -4,7 +4,7 @@ const CLIENT_ID =
 // Make sure the redirect URI exactly matches what's registered in Spotify Developer Dashboard
 const REDIRECT_URI =
   import.meta.env.VITE_SPOTIFY_REDIRECT_URI ||
-  "https://objective-lewin5-nc679.dev.tempolabs.ai";
+  "https://compassionate-austin5-pb3dd.dev.tempolabs.ai";
 const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
 const RESPONSE_TYPE = "token";
 const SCOPES = [

@@ -122,7 +122,7 @@ export default function PlaylistGrid() {
             Featured Playlist
           </h2>
           <div
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 cursor-pointer"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 cursor-pointer"
             onClick={() => handlePlaylistClick(featuredPlaylist.id)}
           >
             <div className="relative">
@@ -184,7 +184,7 @@ export default function PlaylistGrid() {
         <h2 className="text-2xl font-bold border-b border-primary pb-2 mb-8">
           Latest Playlists
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {playlists.map((playlist) => (
             <div
               key={playlist.id}

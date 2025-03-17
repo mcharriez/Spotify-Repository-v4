@@ -90,15 +90,15 @@ export default function Player() {
   if (!currentTrackUri) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 flex flex-col">
+    <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-2 md:p-4 flex flex-col">
       {currentTrack && (
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-1 md:mb-2">
           <div className="flex items-center">
             {currentTrack.album.images && currentTrack.album.images[0] && (
               <img
                 src={currentTrack.album.images[0].url}
                 alt={currentTrack.name}
-                className="h-10 w-10 mr-3 rounded-sm"
+                className="h-8 w-8 md:h-10 md:w-10 mr-2 md:mr-3 rounded-sm"
               />
             )}
             <div>

@@ -5,6 +5,11 @@ export async function getPlaylistCommentCount(
   playlistId: string,
 ): Promise<number> {
   try {
+    if (!playlistId) {
+      console.warn("No playlist ID provided to getPlaylistCommentCount");
+      return 0;
+    }
+
     // Get count of comments with this playlist_id
     const { data, error } = await supabase
       .from("comments")
