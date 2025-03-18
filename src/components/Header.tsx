@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import CreatePlaylistDialog from "./CreatePlaylistDialog";
+import NotificationsDialog from "./NotificationsDialog";
 
 export default function Header() {
   const { user, logout, isPlaying, togglePlayPause, currentTrackUri } =
@@ -29,6 +30,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
+          <NotificationsDialog />
           <CreatePlaylistDialog />
 
           <DropdownMenu>

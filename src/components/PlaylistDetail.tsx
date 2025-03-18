@@ -8,6 +8,7 @@ import {
   searchUsers,
   addCollaboratorToPlaylist,
 } from "@/lib/spotify";
+import SharePlaylistNotification from "./SharePlaylistNotification";
 import { SpotifyPlaylist, SpotifyPlaylistTrack } from "@/types/spotify";
 import { useSpotify } from "@/context/SpotifyContext";
 import { Button } from "@/components/ui/button";
@@ -476,11 +477,17 @@ export default function PlaylistDetail() {
                 </Dialog>
 
                 {playlist && (
-                  <SharePlaylistDialog
-                    playlistId={playlist.id}
-                    playlistName={playlist.name}
-                    isCollaborative={!!playlist.collaborative}
-                  />
+                  <>
+                    <SharePlaylistNotification
+                      playlistId={playlist.id}
+                      playlistName={playlist.name}
+                    />
+                    <SharePlaylistDialog
+                      playlistId={playlist.id}
+                      playlistName={playlist.name}
+                      isCollaborative={!!playlist.collaborative}
+                    />
+                  </>
                 )}
               </div>
             </div>
