@@ -162,6 +162,9 @@ export const SpotifyProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setIsPlaying(false);
     setCurrentTrackUri(null);
+
+    // Force reload to clear any cached state and redirect to login
+    window.location.href = "/login";
   };
 
   const playTrack = async (uri: string) => {
